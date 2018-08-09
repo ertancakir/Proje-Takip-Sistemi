@@ -1,0 +1,160 @@
+<html>
+    <head>
+            <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+            <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+            <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+            
+    </head>
+
+    <body>
+            {% if calisan.calisan_yetki == "admin" %}
+            {% endif %}
+
+            <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+                    <a class="navbar-brand" href="#">{{calisan.calisan_adi}} {{calisan.calisan_soyadi}}</a>
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                      <span class="navbar-toggler-icon"></span>
+                    </button>
+                  
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        {% if user.is_superuser %}
+                      <ul class="navbar-nav mr-auto">
+                        <li class="nav-item dropdown">
+                          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Proje
+                          </a>
+                          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="#">Projeler</a>
+                            <a class="dropdown-item" href='/takip/proje/ekle/'>Proje Ekle</a>
+                          </div>
+                        </li>
+                        <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                  Görev
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                  <a class="dropdown-item" href="/takip/gorev/liste/">Görevler</a>
+                                  <a class="dropdown-item" href='/takip/gorev/ekle/'>Görev Ekle</a>
+                                </div>
+                        </li>
+                        <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                  Çalışan
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                  <a class="dropdown-item" href='/takip/calisan/liste/'>Çalışanlar</a>
+                                  <a class="dropdown-item" href='/takip/calisan/ekle/'>Çalışan Ekle</a>
+                                </div>
+                        </li>
+                      </ul>
+                      {% endif %}
+                      <form class="form-inline my-2 my-lg-0">
+                        <input class="form-control mr-sm-2" type="search" placeholder="Ara" aria-label="Search">
+                        <button class="btn btn-outline-info my-2 my-sm-0" type="submit">Ara</button>
+                      </form>
+                      <a href="/takip/logout/" class ="btn btn-outline-success my-2 my-sm-0">Çıkış</a>
+                    </div>
+                  </nav>
+                  <br><br>
+
+
+            <div class="container">
+                <h2>Mevcut Projeler</h2>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Proje Adı</th>
+                            <th>Başlangıç Tarihi</th>
+                            <th>Bitiş Tarihi</th>
+                            {% if calisan.calisan_yetki == 'admin' %}
+                            <th></th>
+                            {% endif %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                            {% for proje in projeler %}
+                            <tr>
+                                <td><a href='/takip/proje/detay/{{proje.proje_id}}'>{{proje.proje_adi}}</a></td>
+                                <td>{{proje.proje_baslama_tarih}}</td>
+                                <td>{{proje.proje_teslim_tarih}}</td>
+                                {% if calisan.calisan_yetki == 'admin' %}
+                                <td class="text-center">
+                                  <a href='/takip/proje/sil/{{proje.proje_id}}' class="btn btn-danger btn-sm">Proje Sil</a>
+                                  <a href='/takip/gorev/ekle/' class="btn btn-info btn-sm">Görev Ekle</a>
+                                </td>
+                                {% endif %}
+                            </tr>
+                            {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            
+
+            <div class="container">
+                <div class="col-md-6">
+                  <h2>Mevcut Görevler</h2>
+                  <p>Yapılması gereken görevler</p>
+
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Görev Adı</th>
+                            <th>Proje Adı</th>
+                            <th>Görevi Veren</th>
+                            <th>Son Tarih</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                            {% for gorev in gorevler %}
+                            {% if gorev.gorev_durum %}
+                            {% else %}
+                            <tr>
+                              <td>{{gorev.gorev_adi}}</td>
+                              <td>{{gorev.proje.proje_adi}}</td>
+                              <td>{{gorev.gorev_veren.calisan_adi}} {{gorev.gorev_veren.calisan_soyadi}}</td>
+                              <td>{{gorev.gorev_teslim_tarih}}</td>
+                              <td class="text-center"><a href='/takip/gorev/bitir/{{gorev.gorev_id}}' class="btn btn-danger btn-sm">Görevi Bitir</a></td>
+                            </tr>
+                            {% endif %}
+                            {% endfor %}
+                    </tbody>
+                </table>
+                </div>
+                
+                <div class="col-md-6">
+                  <h2>Bitmiş Görevler</h2>
+
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Görev Adı</th>
+                            <th>Proje Adı</th>
+                            <th>Görevi Veren</th>
+                            <th>Son Tarih</th>
+                            <th></th>
+                            <tj
+                        </tr>
+                    </thead>
+                    <tbody>
+                            {% for gorev in gorevler %}
+                              {% if gorev.gorev_durum %}
+                              <tr>
+                                <td>{{gorev.gorev_adi}}</td>
+                                <td>{{gorev.proje.proje_adi}}</td>
+                                <td>{{gorev.gorev_veren.calisan_adi}} {{gorev.gorev_veren.calisan_soyadi}}</td>
+                                <td>{{gorev.gorev_teslim_tarih}}</td>
+                                <td class="text-center"><a href='/takip/gorev/gerigetir/{{gorev.gorev_id}}' class="btn btn-danger btn-sm">Görevi Geri Al</a></td>
+                              </tr>
+                              {% endif %}
+                            {% endfor %}
+                    </tbody>
+                </table>
+                </div>
+            </div>
+            
+
+    </body>
+</html>
+

@@ -1,0 +1,41 @@
+<html>
+    <head>
+            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+            <!-- Optional theme -->
+            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+            
+            <!-- Latest compiled and minified JavaScript -->
+            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    </head>
+    <body>
+        <div class="container">
+                <h2>{{proje_adi}}</h2>
+                <p>Projeye Ait Görevler</p>
+                <p><a href='/takip/gorev/ekle/' class="btn btn-success btn-lg">Görev Ekle</a></p>
+                <table class="table table-bordered">
+                     <thead>
+                        <tr>
+                            <th>Görev Adı</th>
+                            <th>Görevi Veren</th>
+                            <th>Görevli</th>
+                            <th>Teslim Tarihi</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                            {% for gorev in gorevler %}
+                            <tr>
+                                <td>{{gorev.gorev_adi}}</td>
+                                <td>{{gorev.gorev_veren.calisan_adi}} {{gorev.gorev_veren.calisan_soyadi}}</td>
+                                <td>{{gorev.gorev_alan.calisan_adi}} {{gorev.gorev_alan.calisan_soyadi}}</td>
+                                <td>{{gorev.gorev_teslim_tarih}}</td>
+                                <td class="text-center"><a href='/takip/gorev/sil/{{gorev.gorev_id}}' class="btn btn-danger btn-sm">Görevi Sil</a></td>
+                                
+                            </tr>
+                            {% endfor %}
+                    </tbody>
+                </table>
+        </div>
+    </body>
+</html>
